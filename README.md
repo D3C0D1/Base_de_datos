@@ -134,3 +134,23 @@ Optimizadas para almacenar y consultar datos espaciales, como coordenadas geogr�
 
 ---
 
+## 5. 💻 Sistema Gestor de Bases de Datos (SGBD)
+
+Un Sistema Gestor de Bases de Datos (SGBD) es el software que permite crear, gestionar y utilizar bases de datos. Algunos de los SGBD más conocidos incluyen:
+
+- **MySQL**: Popular en aplicaciones web, es un SGBD relacional de código abierto.
+- **PostgreSQL**: Conocido por su robustez y capacidad para manejar operaciones complejas.
+- **Microsoft SQL Server**: Usado en muchas empresas, ofrece integración profunda con aplicaciones de Microsoft.
+- **Oracle Database**: Utilizado en grandes corporaciones por su capacidad para manejar grandes volúmenes de datos y operaciones críticas.
+
+Estos SGBD proporcionan herramientas para definir la estructura de la base de datos, gestionar la seguridad y ejecutar consultas SQL para interactuar con los datos. Elegir el SGBD adecuado depende de las necesidades específicas del proyecto, como el tipo de datos, el volumen de información y el presupuesto disponible.
+
+### 🗂️ **Ilustración:**
+![Comparativa de SGBD](https://example.com/sgbd-comparison.png)  
+*(Tabla comparativa de los SGBD más populares, destacando sus características clave.)*
+
+**Referencias:**
+- Redgate (2021). *SQL Server Backup and Restore*. Redgate.
+- Sheeri, K. (2008). *MySQL Database Design and Tuning*. Pearson Education.
+
+---
