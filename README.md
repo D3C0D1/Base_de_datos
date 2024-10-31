@@ -57,18 +57,33 @@ En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas
 
 ## 🔧 Comandos SQL Útiles
 
-Ejemplos de consultas y comandos que podrían resultar útiles para la administración de la base de datos:
+Ejemplos de consultas y comandos SQL útiles para la administración de la base de datos:
 
 ```sql
--- Obtener clientes activos
+-- Obtener todos los clientes activos
 SELECT * FROM cliente WHERE estado = 1;
 
--- Actualizar precio de un producto
-UPDATE producto SET precio = 20000 WHERE codproducto = 1;
+-- Consultar el inventario de productos con menos de 10 unidades
+SELECT * FROM producto WHERE existencia < 10;
 
--- Eliminar proveedor específico
+-- Sumar el total de ventas realizadas por un cliente específico
+SELECT SUM(totalfactura) FROM factura WHERE codcliente = 1;
+
+-- Consultar productos y su proveedor respectivo
+SELECT p.descripcion, prov.proveedor 
+FROM producto p
+JOIN proveedor prov ON p.proveedor = prov.codproveedor;
+
+-- Obtener facturas y el nombre del cliente asociado
+SELECT f.nofactura, c.nombre 
+FROM factura f
+JOIN cliente c ON f.codcliente = c.idcliente;
+
+-- Actualizar el precio de un producto específico
+UPDATE producto SET precio = 18000 WHERE codproducto = 2;
+
+-- Eliminar un registro de un proveedor específico
 DELETE FROM proveedor WHERE codproveedor = 5;
-```
 
 ---
 
