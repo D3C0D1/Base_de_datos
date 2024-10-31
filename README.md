@@ -141,7 +141,55 @@ DataConnect cuenta con **12 tablas** que abarcan diferentes aspectos de la gesti
 - **Rol**: Describe roles de los usuarios en el sistema.
 
 ---
+# Guía de Transformación de Modelos
 
+## 1. Del Modelo Conceptual al Modelo Entidad-Relación (ER)
+
+En el modelo conceptual, definimos las entidades principales y las relaciones entre ellas sin entrar en detalles de implementación. En este caso, identificamos entidades como `cliente`, `producto`, `factura`, `detallefactura`, entre otros, y establecemos relaciones de negocio (como `cliente` realiza `factura` o `producto` se incluye en `detallefactura`).
+
+**Pasos para convertir al modelo ER:**
+- **Identificación de Entidades:** Extraemos las entidades del modelo conceptual, tales como `cliente`, `producto`, y `factura`.
+- **Identificación de Relaciones:** Determinamos las relaciones entre entidades y sus cardinalidades. Por ejemplo, un `cliente` puede tener varias `facturas`, mientras que cada `factura` corresponde a un único `cliente` (relación 1:N).
+- **Incorporación de Atributos:** Añadimos atributos importantes a cada entidad, como el `nombre` y `dni` en `cliente`, o `precio` y `existencia` en `producto`.
+- **Asignación de Cardinalidades:** Definimos la cantidad de ocurrencias permitidas entre entidades para completar el modelo ER.
+
+## 2. Del Modelo ER al Modelo Relacional
+
+Para convertir el modelo ER en el modelo relacional (tablas SQL):
+- **Transformación de Entidades en Tablas:** Cada entidad se convierte en una tabla. Por ejemplo, la entidad `cliente` se convierte en una tabla con atributos como `idcliente`, `dni`, `nombre`, etc.
+- **Definición de Llaves Primarias y Foráneas:** Asignamos llaves primarias a cada tabla y, cuando corresponde, llaves foráneas para mantener las relaciones. Por ejemplo, en la tabla `factura`, `codcliente` actúa como una llave foránea que referencia a `cliente`.
+- **Implementación de Relaciones con Llaves Foráneas:** Las relaciones 1:N se implementan usando llaves foráneas. Por ejemplo, `detallefactura` tiene una relación 1:N con `producto` y `factura`, por lo que incluye `codproducto` y `nofactura` como llaves foráneas.
+
+---
+
+### Ejemplo de Transformación de Entidad y Relación en SQL
+
+La relación entre `cliente` y `factura`:
+- **Entidad `cliente`**:
+  ```sql
+  CREATE TABLE cliente (
+      idcliente INT PRIMARY KEY,
+      dni INT NOT NULL,
+      nombre VARCHAR(100),
+      telefono INT,
+      direccion VARCHAR(200)
+  );
+  ```
+
+- **Entidad `factura`** con relación a `cliente`:
+  ```sql
+  CREATE TABLE factura (
+      nofactura INT PRIMARY KEY,
+      fecha DATETIME,
+      usuario INT,
+      codcliente INT,
+      totalfactura DECIMAL(10,2),
+      FOREIGN KEY (codcliente) REFERENCES cliente(idcliente)
+  );
+  ```
+
+Esta guía explica cómo crear y estructurar la base de datos desde el modelo conceptual hasta el relacional.
+---
 ## 📜 DDL y DML - Definición de Tablas y Datos
 
 A continuación se muestran los comandos DDL y DML del sistema DataConnect, provenientes del archivo `sis_venta.sql`:
