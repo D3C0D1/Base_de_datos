@@ -40,7 +40,7 @@ En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas
 
 ## 🏗️ Modelo Conceptual a Relacional
 
-### 📊 Matriz de Relaciones
+### 📊 Matriz de Relaciones (modelo relacional)
 
 | Entidad         | Atributos Principales                                  | Relaciones                                                |
 |-----------------|--------------------------------------------------------|-----------------------------------------------------------|
@@ -53,7 +53,7 @@ En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas
 | **Detallefactura** | `nodetalle` (PK), `nofactura` (FK), `codproducto` (FK), `cantidad`, `precio` | Factura (N:1), Producto (N:1) |
 
 --- 
-## Matriz de Relaciones
+## Matriz de Relaciones (modelo conceptual)
 
 |                | cliente | configuracion | detallefactura | detalle_temp | entradas | factura | producto | proveedor | rol | usuario |
 |----------------|---------|---------------|----------------|--------------|----------|---------|----------|-----------|-----|---------|
