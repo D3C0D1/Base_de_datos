@@ -1,155 +1,116 @@
-# 🚀 DataConnect - Centralización y Análisis de Datos para PYMEs
+
+# DataConnect - Plataforma de Integración y Gestión de Datos para PYMEs
+
+![DataConnect Logo](https://via.placeholder.com/600x150?text=DataConnect+Logo)
+
+**DataConnect** es una solución diseñada para ayudar a las PYMEs a centralizar, gestionar y analizar datos de diversas fuentes en un solo lugar, facilitando la toma de decisiones a partir de información consolidada.
+
+---
+
+## Funcionalidades Clave
+
+- **Integración de Datos**: Unifica información de clientes, productos, proveedores y transacciones.
+- **Gestión de Información**: Controla y actualiza los datos de la empresa de forma segura y eficiente.
+- **Análisis Optimizado**: Facilita la extracción de información valiosa y estructurada para decisiones rápidas.
+
+---
 
 ## Índice
 
-1. [Contexto](#contexto)
-2. [Objetivo](#objetivo)
-3. [Descripción del Proyecto](#descripción-del-proyecto)
-4. [Esquema de la Base de Datos](#esquema-de-la-base-de-datos)
-   - [Tablas y Entidades](#tablas-y-entidades)
-   - [Procedimientos DDL](#procedimientos-ddl)
-   - [Procedimientos DML](#procedimientos-dml)
-5. [Instalación](#instalación)
-6. [Contribuciones](#contribuciones)
-7. [Licencia](#licencia)
+1. [Contexto del Proyecto](#contexto-del-proyecto)
+2. [Modelo Conceptual a Relacional](#modelo-conceptual-a-relacional)
+   - [Matriz de Relaciones](#matriz-de-relaciones)
+3. [Comandos SQL Útiles](#comandos-sql-útiles)
+4. [Instalación](#instalación)
+   - [Guía para XAMPP](#usando-xampp)
+   - [Guía para MySQL Workbench](#usando-mysql-workbench)
+5. [Tablas y Entidades](#tablas-y-entidades)
 
 ---
 
-## 📖 Contexto 
+## Contexto del Proyecto
 
-*DataConnect* es un software innovador que busca ayudar a pequeñas y medianas empresas (PYMEs) en la integración, gestión y análisis de datos dispersos en múltiples fuentes, consolidándolos en una sola plataforma. 
+### ¿Por qué DataConnect?
 
-*Problema*: Muchas PYMEs tienen sus datos regados entre hojas de cálculo, correos electrónicos y otras aplicaciones, haciendo difícil obtener información precisa y confiable para decisiones empresariales.
+En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas de cálculo, aplicaciones y sistemas de correos, dificultando la coherencia y accesibilidad de la información.
 
-*Objetivo*: Centralizar los datos, mejorar su análisis y optimizar la toma de decisiones empresariales mediante una solución robusta y escalable.
-
-## 🎯 Objetivo
-
-DataConnect busca ofrecer una solución que:
-
-- Permita centralizar datos de múltiples fuentes en una única base de datos.
-- Mejore la calidad y consistencia de los datos, reduciendo errores humanos.
-- Facilite el análisis de datos para obtener insights empresariales en tiempo real.
+**Objetivo del Proyecto**: DataConnect busca centralizar estos datos en una plataforma única que simplifique la consulta, administración y análisis de la información.
 
 ---
 
-## 💻 Descripción del Proyecto
+## Modelo Conceptual a Relacional
 
-Este proyecto contiene la estructura SQL necesaria para crear una base de datos que soporte el sistema DataConnect. La base de datos incluye múltiples tablas y relaciones que permiten almacenar y organizar datos empresariales de manera eficiente.
+### Matriz de Relaciones
 
----
+A continuación se presenta la matriz de relaciones con las cardinalidades entre entidades del sistema DataConnect:
 
-## 📊 Esquema de la Base de Datos
+| Entidad        | Atributos Principales                                  | Relaciones                                                |
+|----------------|--------------------------------------------------------|-----------------------------------------------------------|
+| **Cliente**    | `idcliente` (PK), `dni`, `nombre`, `teléfono`, `dirección` | Usuario (N:1), Factura (1:N)                              |
+| **Producto**   | `codproducto` (PK), `descripción`, `precio`, `existencia` | Proveedor (N:1), Factura (N:M a través de Detallefactura) |
+| **Factura**    | `nofactura` (PK), `fecha`, `usuario`, `codcliente`, `totalfactura` | Cliente (N:1), Detallefactura (1:N)                      |
+| **Proveedor**  | `codproveedor` (PK), `proveedor`, `contacto`, `teléfono`, `dirección` | Producto (1:N)                                            |
+| **Usuario**    | `idusuario` (PK), `nombre`, `correo`, `usuario`, `clave` | Rol (N:1), Factura (1:N)                                  |
+| **Rol**        | `idrol` (PK), `rol_descripcion`                        | Usuario (1:N)                                             |
+| **Detallefactura** | `nodetalle` (PK), `nofactura` (FK), `codproducto` (FK), `cantidad`, `precio` | Factura (N:1), Producto (N:1) |
 
-A continuación se detallan los elementos principales del esquema de la base de datos, incluyendo tablas y sus relaciones, así como los procedimientos para manipular datos (DDL y DML).
+### Ejemplo de Conversión al Modelo Relacional
 
-### 🗃️ Tablas y Entidades
+**Cliente**
+- Atributos: `idcliente` (PK), `dni`, `nombre`, `teléfono`, `dirección`, `usuario_id` (FK)
+- Relacionado con: Usuario (N:1) y Factura (1:N) mediante `usuario_id` y `codcliente`.
 
-Las principales tablas y entidades de DataConnect incluyen:
-
-- *Clientes*: Información de clientes registrados en el sistema.
-- *Productos*: Inventario de productos y servicios que la empresa ofrece.
-- *Ventas*: Registro de ventas realizadas, relacionando clientes y productos.
-- *Empleados*: Información de empleados, responsables de gestionar y atender a los clientes.
-- *Pagos*: Información sobre pagos, métodos y estado de transacciones.
-
-### 📐 Procedimientos DDL (Data Definition Language)
-
-Los procedimientos DDL definen la estructura de la base de datos, creando las tablas, índices y relaciones. Aquí hay ejemplos clave:
-
-1. *Creación de Tablas*:
-    sql
-    CREATE TABLE Clientes (
-        cliente_id INT PRIMARY KEY,
-        nombre VARCHAR(100),
-        correo VARCHAR(100),
-        telefono VARCHAR(20),
-        direccion VARCHAR(255)
-    );
-    
-    CREATE TABLE Productos (
-        producto_id INT PRIMARY KEY,
-        nombre VARCHAR(100),
-        precio DECIMAL(10, 2),
-        stock INT
-    );
-    
-
-2. *Relaciones entre Tablas*:
-    sql
-    CREATE TABLE Ventas (
-        venta_id INT PRIMARY KEY,
-        cliente_id INT,
-        producto_id INT,
-        cantidad INT,
-        fecha DATE,
-        FOREIGN KEY (cliente_id) REFERENCES Clientes(cliente_id),
-        FOREIGN KEY (producto_id) REFERENCES Productos(producto_id)
-    );
-    
-
-3. *Índices para Optimización*:
-    sql
-    CREATE INDEX idx_cliente_nombre ON Clientes(nombre);
-    CREATE INDEX idx_producto_nombre ON Productos(nombre);
-    
-
-### 🛠️ Procedimientos DML (Data Manipulation Language)
-
-Los procedimientos DML permiten la manipulación de datos, como inserción, actualización y eliminación de registros:
-
-1. *Insertar Datos*:
-    sql
-    INSERT INTO Clientes (cliente_id, nombre, correo, telefono, direccion)
-    VALUES (1, 'Carlos Pérez', 'carlos@example.com', '555-1234', 'Calle 123, Bogotá');
-    
-
-2. *Actualizar Registros*:
-    sql
-    UPDATE Productos
-    SET stock = stock - 1
-    WHERE producto_id = 1;
-    
-
-3. *Eliminar Registros*:
-    sql
-    DELETE FROM Ventas
-    WHERE venta_id = 10;
-    
+**Producto-Proveedor**
+- Atributo principal: `codproducto` (PK)
+- Relación con Proveedor a través de `codproveedor`.
 
 ---
 
-## 🛠️ Instalación
+## Comandos SQL Útiles
 
-Para instalar y configurar el sistema DataConnect, sigue estos pasos:
+Ejemplos de consultas y comandos que podrían resultar útiles para la administración de la base de datos:
 
-1. Clona este repositorio en tu máquina local:
-    bash
-    git clone https://github.com/D3C0D1/Base_de_datos.git
-    
+```sql
+-- Obtener clientes activos
+SELECT * FROM cliente WHERE estado = 1;
 
-2. Importa el archivo SQL en tu sistema de gestión de bases de datos preferido (MySQL, PostgreSQL, etc.).
+-- Actualizar precio de un producto
+UPDATE producto SET precio = 20000 WHERE codproducto = 1;
 
-3. Configura tus credenciales de base de datos en el archivo de configuración.
-
----
-
-## 🤝 Contribuciones
-
-¡Siempre son bienvenidas las contribuciones de la comunidad! Si deseas aportar:
-
-1. Haz un fork de este repositorio.
-2. Crea una nueva rama (git checkout -b feature/nueva-caracteristica).
-3. Haz commit de tus cambios (git commit -am 'Agrega nueva característica').
-4. Sube tus cambios a GitHub (git push origin feature/nueva-caracteristica).
-5. Abre un Pull Request explicando tus cambios.
+-- Eliminar proveedor específico
+DELETE FROM proveedor WHERE codproveedor = 5;
+```
 
 ---
 
-## 📄 Licencia
+## Instalación
 
-Este proyecto está bajo la Licencia MIT. Para más información, consulta el archivo [LICENSE](LICENSE).
+A continuación, se detallan los pasos para la instalación de DataConnect utilizando XAMPP o MySQL Workbench:
+
+### Usando XAMPP
+
+1. **Paso 1**: Instala XAMPP y asegúrate de tener MySQL y Apache activos.
+2. **Paso 2**: Descarga los archivos de este repositorio y copia la carpeta en `C:\xampp\htdocs`.
+3. **Paso 3**: Importa la base de datos:
+   - Abre phpMyAdmin y crea una nueva base de datos llamada `DataConnect`.
+   - En la nueva base de datos, selecciona la opción de importación y carga el archivo `DataConnect.sql`.
+4. **Paso 4**: Verifica que las tablas y datos se hayan cargado correctamente.
+
+### Usando MySQL Workbench
+
+1. **Paso 1**: Instala MySQL Workbench y abre una conexión.
+2. **Paso 2**: En el menú, selecciona File > Open SQL Script y carga el archivo `DataConnect.sql`.
+3. **Paso 3**: Ejecuta el script completo y verifica que las tablas y datos hayan sido creados correctamente.
 
 ---
 
-*¡Gracias por usar DataConnect! 💻📊 Que tus datos siempre estén a la mano y tu análisis sea el más preciso.*
+## Tablas y Entidades
+
+- **Cliente**: Almacena información de clientes como nombre, teléfono y dirección.
+- **Producto**: Registra información de productos, incluyendo precio y existencia.
+- **Factura**: Detalla transacciones realizadas, vinculadas con clientes y productos.
+- **Usuario**: Controla la información de los usuarios del sistema, asociándolos a roles específicos.
+
+---
+
+Este `README.md` cubre el contexto, instalación y estructura de la base de datos de **DataConnect**, diseñado para simplificar y centralizar la gestión de datos para pequeñas y medianas empresas.
