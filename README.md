@@ -96,7 +96,7 @@ FROM producto p
 JOIN proveedor prov ON p.proveedor = prov.codproveedor;
 
 -- Obtener facturas y el nombre del cliente asociado
-SELECT f.nofactura, c.nombre 
+SELECT f.nofactura, c.nombre -
 FROM factura f
 JOIN cliente c ON f.codcliente = c.idcliente;
 
@@ -117,14 +117,14 @@ A continuación, se detallan los pasos para la instalación de DataConnect utili
 1. **Paso 1**: Instala XAMPP y asegúrate de tener MySQL y Apache activos.
 2. **Paso 2**: Descarga los archivos de este repositorio y copia la carpeta en `C:\xampp\htdocs`.
 3. **Paso 3**: Importa la base de datos:
-   - Abre phpMyAdmin y crea una nueva base de datos llamada `DataConnect`.
-   - En la nueva base de datos, selecciona la opción de importación y carga el archivo `DataConnect.sql`.
+   - Abre phpMyAdmin y crea una nueva base de datos llamada `sis_venta`.
+   - En la nueva base de datos, selecciona la opción de importación y carga el archivo `sis_venta.sql`.
 4. **Paso 4**: Verifica que las tablas y datos se hayan cargado correctamente.
 
 ### 💾 Usando MySQL Workbench
 
 1. **Paso 1**: Instala MySQL Workbench y abre una conexión.
-2. **Paso 2**: En el menú, selecciona File > Open SQL Script y carga el archivo `DataConnect.sql`.
+2. **Paso 2**: En el menú, selecciona File > Open SQL Script y carga el archivo `sis_venta.sql`.
 3. **Paso 3**: Ejecuta el script completo y verifica que las tablas y datos hayan sido creados correctamente.
 
 ---
