@@ -118,8 +118,8 @@ A continuación, se detallan los pasos para la instalación de DataConnect utili
    - Abre phpMyAdmin y crea una nueva base de datos llamada `sis_venta`.
    - En la nueva base de datos, selecciona la opción de importación y carga el archivo `sis_venta.sql`.
 4. **Paso 4**: Verifica que las tablas y datos se hayan cargado correctamente.
-5. **Paso 5**: Clona el repositorio en la carpeta htdocs /opt/lampp/htdocs
- para ubuntu y para windows C:\xampp\htdocs
+5. **Paso 5**: Clona el repositorio en la carpeta htdocs`/opt/lampp/htdocs`
+ para ubuntu y para windows `C:\xampp\htdocs`
  .
 
 ### 💾 Usando MySQL Workbench
@@ -127,8 +127,8 @@ A continuación, se detallan los pasos para la instalación de DataConnect utili
 1. **Paso 1**: Instala MySQL Workbench y abre una conexión.
 2. **Paso 2**: En el menú, selecciona File > Open SQL Script y carga el archivo `sis_venta.sql`.
 3. **Paso 3**: Ejecuta el script completo y verifica que las tablas y datos hayan sido creados correctamente.
-4. **Paso 4**: Clona el repositorio en la carpeta htdocs /opt/lampp/htdocs
- para ubuntu y para windows C:\xampp\htdocs
+4. **Paso 4**: Clona el repositorio en la carpeta htdocs `/opt/lampp/htdocs`
+ para ubuntu y para windows `C:\xampp\htdocs`
 ---
 
 ## 🗂️ Tablas y Entidades
