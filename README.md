@@ -84,10 +84,10 @@ UPDATE producto SET precio = 18000 WHERE codproducto = 2;
 
 -- Eliminar un registro de un proveedor específico
 DELETE FROM proveedor WHERE codproveedor = 5;
-
+```
 ---
 
-## 🚀 Instalación
+### 🚀 Instalación
 
 A continuación, se detallan los pasos para la instalación de DataConnect utilizando XAMPP o MySQL Workbench:
 
