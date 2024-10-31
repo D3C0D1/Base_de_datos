@@ -53,6 +53,26 @@ En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas
 | **Detallefactura** | `nodetalle` (PK), `nofactura` (FK), `codproducto` (FK), `cantidad`, `precio` | Factura (N:1), Producto (N:1) |
 
 --- 
+## Matriz de Relaciones
+
+|                | cliente | configuracion | detallefactura | detalle_temp | entradas | factura | producto | proveedor | rol | usuario |
+|----------------|---------|---------------|----------------|--------------|----------|---------|----------|-----------|-----|---------|
+| cliente        |         |               | 1:N            |              |          | N:1     |          |           |     | 1:N     |
+| configuracion  |         |               |                |              |          |         |          |           |     |         |
+| detallefactura | N:1     |               |                |              |          | N:1     | N:1      |           |     |         |
+| detalle_temp   |         |               |                |              |          |         | N:1      |           |     |         |
+| entradas       |         |               |                |              |          |         | N:1      |           |     | N:1     |
+| factura        | N:1     |               | 1:N            |              |          |         |          |           |     | 1:N     |
+| producto       |         |               | 1:N            | 1:N          | 1:N      |         |          | N:1       |     | N:1     |
+| proveedor      |         |               |                |              |          |         | 1:N      |           |     |         |
+| rol            |         |               |                |              |          |         |          |           | 1:N |         |
+| usuario        | 1:N     |               |                |              |          |         | 1:N      |           |     |         |
+
+---
+
+
+
+
 
 ## 🔧 Comandos SQL Útiles
 
@@ -84,6 +104,7 @@ UPDATE producto SET precio = 18000 WHERE codproducto = 2;
 -- Eliminar un registro de un proveedor específico
 DELETE FROM proveedor WHERE codproveedor = 5;
 ```
+---
 
 ### 🚀 Instalación
 
