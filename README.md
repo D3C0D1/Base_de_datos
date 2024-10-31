@@ -1,4 +1,3 @@
-
 # 🌐 DataConnect - Plataforma de Integración y Gestión de Datos para PYMEs
 
 ![DataConnect Logo](https://via.placeholder.com/600x150?text=DataConnect+Logo)
@@ -17,21 +16,21 @@
 
 ## 🧭 Índice
 
-1. [Contexto del Proyecto](#contexto-del-proyecto)
-2. [Modelo Conceptual a Relacional](#modelo-conceptual-a-relacional)
-   - [Matriz de Relaciones](#matriz-de-relaciones)
-3. [Comandos SQL Útiles](#comandos-sql-útiles)
-4. [Instalación](#instalación)
-   - [Guía para XAMPP](#usando-xampp)
-   - [Guía para MySQL Workbench](#usando-mysql-workbench)
-5. [Tablas y Entidades](#tablas-y-entidades)
-6. [📜 DDL y DML - Definición de Tablas y Datos](#ddl-y-dml)
+1. [🎯 Contexto del Proyecto](#🎯-contexto-del-proyecto)
+2. [🏗️ Modelo Conceptual a Relacional](#🏗️-modelo-conceptual-a-relacional)
+   - [📊 Matriz de Relaciones](#📊-matriz-de-relaciones)
+3. [🔧 Comandos SQL Útiles](#🔧-comandos-sql-útiles)
+4. [🚀 Instalación](#🚀-instalación)
+   - [💻 Guía para XAMPP](#💻-usando-xampp)
+   - [💾 Guía para MySQL Workbench](#💾-usando-mysql-workbench)
+5. [🗂️ Tablas y Entidades](#🗂️-tablas-y-entidades)
+6. [📜 DDL y DML - Definición de Tablas y Datos](#📜-ddl-y-dml)
 
 ---
 
 ## 🎯 Contexto del Proyecto
 
-### ¿Por qué DataConnect?
+### ¿Por qué DataConnect? 🤔
 
 En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas de cálculo, aplicaciones y sistemas de correos, dificultando la coherencia y accesibilidad de la información.
 
@@ -43,38 +42,17 @@ En muchas PYMEs, los datos están dispersos en diferentes plataformas como hojas
 
 ### 📊 Matriz de Relaciones
 
-| Entidad        | Atributos Principales                                  | Relaciones                                                |
-|----------------|--------------------------------------------------------|-----------------------------------------------------------|
-| **Cliente**    | `idcliente` (PK), `dni`, `nombre`, `teléfono`, `dirección` | Usuario (N:1), Factura (1:N)                              |
-| **Producto**   | `codproducto` (PK), `descripción`, `precio`, `existencia` | Proveedor (N:1), Factura (N:M a través de Detallefactura) |
-| **Factura**    | `nofactura` (PK), `fecha`, `usuario`, `codcliente`, `totalfactura` | Cliente (N:1), Detallefactura (1:N)                      |
-| **Proveedor**  | `codproveedor` (PK), `proveedor`, `contacto`, `teléfono`, `dirección` | Producto (1:N)                                            |
-| **Usuario**    | `idusuario` (PK), `nombre`, `correo`, `usuario`, `clave` | Rol (N:1), Factura (1:N)                                  |
-| **Rol**        | `idrol` (PK), `rol_descripcion`                        | Usuario (1:N)                                             |
+| Entidad         | Atributos Principales                                  | Relaciones                                                |
+|-----------------|--------------------------------------------------------|-----------------------------------------------------------|
+| **Cliente**     | `idcliente` (PK), `dni`, `nombre`, `teléfono`, `dirección` | Usuario (N:1), Factura (1:N)                              |
+| **Producto**    | `codproducto` (PK), `descripción`, `precio`, `existencia` | Proveedor (N:1), Factura (N:M a través de Detallefactura) |
+| **Factura**     | `nofactura` (PK), `fecha`, `usuario`, `codcliente`, `totalfactura` | Cliente (N:1), Detallefactura (1:N)                      |
+| **Proveedor**   | `codproveedor` (PK), `proveedor`, `contacto`, `teléfono`, `dirección` | Producto (1:N)                                            |
+| **Usuario**     | `idusuario` (PK), `nombre`, `correo`, `usuario`, `clave` | Rol (N:1), Factura (1:N)                                  |
+| **Rol**         | `idrol` (PK), `rol_descripcion`                        | Usuario (1:N)                                             |
 | **Detallefactura** | `nodetalle` (PK), `nofactura` (FK), `codproducto` (FK), `cantidad`, `precio` | Factura (N:1), Producto (N:1) |
 
-
-
-## Matriz de Relaciones
-
-|                | cliente | configuracion | detallefactura | detalle_temp | entradas | factura | producto | proveedor | rol | usuario |
-|----------------|---------|---------------|----------------|--------------|----------|---------|----------|-----------|-----|---------|
-| cliente        |         |               | 1:N            |              |          | N:1     |          |           |     | 1:N     |
-| configuracion  |         |               |                |              |          |         |          |           |     |         |
-| detallefactura | N:1     |               |                |              |          | N:1     | N:1      |           |     |         |
-| detalle_temp   |         |               |                |              |          |         | N:1      |           |     |         |
-| entradas       |         |               |                |              |          |         | N:1      |           |     | N:1     |
-| factura        | N:1     |               | 1:N            |              |          |         |          |           |     | 1:N     |
-| producto       |         |               | 1:N            | 1:N          | 1:N      |         |          | N:1       |     | N:1     |
-| proveedor      |         |               |                |              |          |         | 1:N      |           |     |         |
-| rol            |         |               |                |              |          |         |          |           | 1:N |         |
-| usuario        | 1:N     |               |                |              |          |         | 1:N      |           |     |         |
-
----
-
-
-
-
+--- 
 
 ## 🔧 Comandos SQL Útiles
 
@@ -106,7 +84,6 @@ UPDATE producto SET precio = 18000 WHERE codproducto = 2;
 -- Eliminar un registro de un proveedor específico
 DELETE FROM proveedor WHERE codproveedor = 5;
 ```
----
 
 ### 🚀 Instalación
 
