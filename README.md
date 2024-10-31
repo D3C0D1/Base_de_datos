@@ -240,6 +240,25 @@ BEGIN
 END$$
 ```
 
+# Descripción de Triggers y JOINs en sis_venta.sql
+
+## 1. Triggers
+Los triggers (o disparadores) son bloques de código que se ejecutan automáticamente en respuesta a eventos específicos (como INSERT, UPDATE, o DELETE) en una tabla.
+
+### Ejemplos de Triggers:
+- *actualizar_existencia_producto*: Este trigger se activa después de que se inserte un registro en detallefactura. Reduce la cantidad de existencia del producto vendido.
+- *verificar_existencia*: Antes de agregar un detalle temporal en detalle_temp, este trigger verifica que haya suficiente existencia en el inventario para la venta. Si la cantidad es insuficiente, muestra un mensaje de error y evita la operación.
+- *restablecer_existencia*: Si se elimina una venta en detallefactura, este trigger restaura la cantidad de productos eliminados al inventario.
+
+## 2. Consultas JOIN
+Las consultas JOIN permiten unir datos de diferentes tablas según criterios específicos.
+
+### Ejemplos de JOIN:
+- *INNER JOIN*: Usado para obtener solo los registros que coinciden en ambas tablas. En la consulta de ejemplo, obtenemos todas las facturas por cliente.
+- *LEFT JOIN*: Devuelve todos los registros de la tabla izquierda, incluso si no hay coincidencias en la derecha. En este ejemplo, se muestran los productos y sus ventas, incluyendo productos sin ventas.
+- *RIGHT JOIN*: Similar al LEFT JOIN, pero devuelve todos los registros de la tabla derecha. Aquí se usa para ver todas las ventas y también los usuarios sin ventas.
+
+Estas consultas y triggers mejoran la integridad y funcionalidad de la base de datos en el sistema sis_venta.
 ---
 
 Este `README.md` cubre el contexto, instalación, estructura de la base de datos y detalles del sistema **DataConnect**, diseñado para simplificar y centralizar la gestión de datos para pequeñas y medianas empresas.

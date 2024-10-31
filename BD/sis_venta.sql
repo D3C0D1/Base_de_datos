@@ -443,3 +443,62 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- Triggers para sis_venta
+
+-- Trigger para actualizar existencia de producto después de una venta en detallefactura
+DELIMITER //
+CREATE TRIGGER actualizar_existencia_producto
+AFTER INSERT ON detallefactura
+FOR EACH ROW
+BEGIN
+    DECLARE nueva_existencia INT;
+    SET nueva_existencia = (SELECT existencia FROM producto WHERE codproducto = NEW.codproducto) - NEW.cantidad;
+    UPDATE producto SET existencia = nueva_existencia WHERE codproducto = NEW.codproducto;
+END;
+//
+DELIMITER ;
+
+-- Trigger para evitar ventas si no hay suficiente existencia en detalle_temp
+DELIMITER //
+CREATE TRIGGER verificar_existencia
+BEFORE INSERT ON detalle_temp
+FOR EACH ROW
+BEGIN
+    DECLARE existencia_actual INT;
+    SET existencia_actual = (SELECT existencia FROM producto WHERE codproducto = NEW.codproducto);
+    IF existencia_actual < NEW.cantidad THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cantidad en inventario insuficiente para realizar la venta';
+    END IF;
+END;
+//
+DELIMITER ;
+
+-- Trigger para restablecer inventario si se elimina una venta de detallefactura
+DELIMITER //
+CREATE TRIGGER restablecer_existencia
+AFTER DELETE ON detallefactura
+FOR EACH ROW
+BEGIN
+    UPDATE producto SET existencia = existencia + OLD.cantidad WHERE codproducto = OLD.codproducto;
+END;
+//
+DELIMITER ;
+
+
+-- Consultas con JOIN para sis_venta
+
+-- INNER JOIN entre cliente y factura para ver todas las facturas por cliente
+SELECT cliente.nombre AS cliente, factura.nofactura, factura.fecha, factura.totalfactura
+FROM cliente
+INNER JOIN factura ON cliente.idcliente = factura.codcliente;
+
+-- LEFT JOIN entre detallefactura y producto para obtener detalles de venta incluyendo productos no vendidos
+SELECT producto.descripcion, detallefactura.cantidad, detallefactura.precio_venta
+FROM producto
+LEFT JOIN detallefactura ON producto.codproducto = detallefactura.codproducto;
+
+-- RIGHT JOIN entre usuario y factura para ver todas las ventas asociadas con usuarios y los usuarios sin ventas
+SELECT usuario.nombre, factura.nofactura, factura.totalfactura
+FROM usuario
+RIGHT JOIN factura ON usuario.idusuario = factura.usuario;
