@@ -1,15 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 06-01-2021 a las 19:39:38
--- Versión del servidor: 10.4.14-MariaDB
--- Versión de PHP: 7.4.9
+-- Tiempo de generación: 07-11-2024 a las 08:42:39
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
-SET time_zone = "-05:00";
+SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -25,7 +25,7 @@ DELIMITER $$
 --
 -- Procedimientos
 --
-CREATE PROCEDURE `actualizar_precio_producto` (IN `n_cantidad` INT, IN `n_precio` DECIMAL(10,2), IN `codigo` INT)  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `actualizar_precio_producto` (IN `n_cantidad` INT, IN `n_precio` DECIMAL(10,2), IN `codigo` INT)   BEGIN
 DECLARE nueva_existencia int;
 DECLARE nuevo_total decimal(10,2);
 DECLARE nuevo_precio decimal(10,2);
@@ -47,14 +47,14 @@ UPDATE producto SET existencia = nueva_existencia, precio = nuevo_precio WHERE c
 SELECT nueva_existencia, nuevo_precio;
 END$$
 
-CREATE PROCEDURE `add_detalle_temp` (`codigo` INT, `cantidad` INT, `token_user` VARCHAR(50))  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `add_detalle_temp` (`codigo` INT, `cantidad` INT, `token_user` VARCHAR(50))   BEGIN
 DECLARE precio_actual decimal(10,2);
 SELECT precio INTO precio_actual FROM producto WHERE codproducto = codigo;
 INSERT INTO detalle_temp(token_user, codproducto, cantidad, precio_venta) VALUES (token_user, codigo, cantidad, precio_actual);
 SELECT tmp.correlativo, tmp.codproducto, p.descripcion, tmp.cantidad, tmp.precio_venta FROM detalle_temp tmp INNER JOIN producto p ON tmp.codproducto = p.codproducto WHERE tmp.token_user = token_user;
 END$$
 
-CREATE PROCEDURE `data` ()  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `data` ()   BEGIN
 DECLARE usuarios int;
 DECLARE clientes int;
 DECLARE proveedores int;
@@ -70,12 +70,12 @@ SELECT usuarios, clientes, proveedores, productos, ventas;
 
 END$$
 
-CREATE PROCEDURE `del_detalle_temp` (`id_detalle` INT, `token` VARCHAR(50))  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `del_detalle_temp` (`id_detalle` INT, `token` VARCHAR(50))   BEGIN
 DELETE FROM detalle_temp WHERE correlativo = id_detalle;
 SELECT tmp.correlativo, tmp.codproducto, p.descripcion, tmp.cantidad, tmp.precio_venta FROM detalle_temp tmp INNER JOIN producto p ON tmp.codproducto = p.codproducto WHERE tmp.token_user = token;
 END$$
 
-CREATE PROCEDURE `procesar_venta` (IN `cod_usuario` INT, IN `cod_cliente` INT, IN `token` VARCHAR(50))  BEGIN
+CREATE DEFINER=`root`@`localhost` PROCEDURE `procesar_venta` (IN `cod_usuario` INT, IN `cod_cliente` INT, IN `token` VARCHAR(50))   BEGIN
 DECLARE factura INT;
 DECLARE registros INT;
 DECLARE total DECIMAL(10,2);
@@ -126,9 +126,9 @@ DELIMITER ;
 CREATE TABLE `cliente` (
   `idcliente` int(11) NOT NULL,
   `dni` int(8) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `nombre` varchar(100) NOT NULL,
   `telefono` int(15) NOT NULL,
-  `direccion` varchar(200) COLLATE utf8_spanish_ci NOT NULL,
+  `direccion` varchar(200) NOT NULL,
   `usuario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -137,7 +137,10 @@ CREATE TABLE `cliente` (
 --
 
 INSERT INTO `cliente` (`idcliente`, `dni`, `nombre`, `telefono`, `direccion`, `usuario_id`) VALUES
-(1, 123545, 'Pubico en general', 925491523, 'Colombia', 1);
+(1, 123545, 'Pubico en general', 925491523, 'Colombia', 1),
+(2, 123456, 'Don Jaider', 2147483647, 'calle 30#14-99', 1),
+(3, 1234, 'Erika cotero', 2147483647, 'calle 30#14-97', 1),
+(4, 1, 'Don Jaider', 2199999, 'calle 30#14-97', 1);
 
 -- --------------------------------------------------------
 
@@ -148,20 +151,21 @@ INSERT INTO `cliente` (`idcliente`, `dni`, `nombre`, `telefono`, `direccion`, `u
 CREATE TABLE `configuracion` (
   `id` int(11) NOT NULL,
   `dni` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `razon_social` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `razon_social` varchar(100) NOT NULL,
   `telefono` int(11) NOT NULL,
-  `email` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `direccion` text COLLATE utf8_spanish_ci NOT NULL,
-  `igv` decimal(10,2) NOT NULL
+  `email` varchar(100) NOT NULL,
+  `direccion` text NOT NULL,
+  `igv` decimal(10,2) NOT NULL,
+  `ventas_habilitadas` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `configuracion`
 --
 
-INSERT INTO `configuracion` (`id`, `dni`, `nombre`, `razon_social`, `telefono`, `email`, `direccion`, `igv`) VALUES
-(1, 1007494559, 'Daniel Andres Florèz', 'admin', 925491523, 'estudiante_danielflorez@uajs.edu.co', 'Colombia', '1.18');
+INSERT INTO `configuracion` (`id`, `dni`, `nombre`, `razon_social`, `telefono`, `email`, `direccion`, `igv`, `ventas_habilitadas`) VALUES
+(1, 1007494559, 'Daniel Andres Florèz', 'admin', 925491523, 'estudiante_danielflorez@uajs.edu.co', 'Colombia', 1.18, 1);
 
 -- --------------------------------------------------------
 
@@ -177,6 +181,19 @@ CREATE TABLE `detallefactura` (
   `precio_venta` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `detallefactura`
+--
+
+INSERT INTO `detallefactura` (`correlativo`, `nofactura`, `codproducto`, `cantidad`, `precio_venta`) VALUES
+(1, 1, 1, 1, 156000.00),
+(2, 1, 2, 1, 250000.00),
+(4, 2, 2, 1, 250000.00),
+(5, 3, 1, 1, 156000.00),
+(6, 4, 2, 1, 250000.00),
+(7, 5, 1, 1, 156000.00),
+(8, 6, 1, 1, 156000.00);
+
 -- --------------------------------------------------------
 
 --
@@ -185,7 +202,7 @@ CREATE TABLE `detallefactura` (
 
 CREATE TABLE `detalle_temp` (
   `correlativo` int(11) NOT NULL,
-  `token_user` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `token_user` varchar(50) NOT NULL,
   `codproducto` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `precio_venta` decimal(10,2) NOT NULL
@@ -221,6 +238,18 @@ CREATE TABLE `factura` (
   `estado` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
+--
+-- Volcado de datos para la tabla `factura`
+--
+
+INSERT INTO `factura` (`nofactura`, `fecha`, `usuario`, `codcliente`, `totalfactura`, `estado`) VALUES
+(1, '2024-10-28 01:06:35', 1, 3, 406000.00, 1),
+(2, '2024-10-28 01:11:38', 1, 4, 250000.00, 1),
+(3, '2024-11-06 22:12:12', 1, 4, 156000.00, 1),
+(4, '2024-11-07 07:23:28', 1, 4, 250000.00, 1),
+(5, '2024-11-07 08:29:29', 1, 4, 156000.00, 1),
+(6, '2024-11-07 08:31:33', 1, 4, 156000.00, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -229,7 +258,7 @@ CREATE TABLE `factura` (
 
 CREATE TABLE `producto` (
   `codproducto` int(11) NOT NULL,
-  `descripcion` varchar(200) COLLATE utf8_spanish_ci NOT NULL,
+  `descripcion` varchar(200) NOT NULL,
   `proveedor` int(11) NOT NULL,
   `precio` decimal(10,2) NOT NULL,
   `existencia` int(11) NOT NULL,
@@ -241,10 +270,10 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`codproducto`, `descripcion`, `proveedor`, `precio`, `existencia`, `usuario_id`) VALUES
-(1, 'Laptop lenovo', 1, '156000.00', 49, 2),
-(2, 'Televisor', 1, '250000.00', 79, 1),
-(6, 'Impresora', 1, '80000.00', 0, 1),
-(7, 'Gaseosa', 3, '1500.00', 5, 1);
+(1, 'Laptop lenovo', 1, 156000.00, 45, 2),
+(2, 'Televisor', 1, 250000.00, 76, 1),
+(6, 'Impresora', 1, 80000.00, 0, 1),
+(7, 'Gaseosa', 3, 1500.00, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -254,10 +283,10 @@ INSERT INTO `producto` (`codproducto`, `descripcion`, `proveedor`, `precio`, `ex
 
 CREATE TABLE `proveedor` (
   `codproveedor` int(11) NOT NULL,
-  `proveedor` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `contacto` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `proveedor` varchar(100) NOT NULL,
+  `contacto` varchar(100) NOT NULL,
   `telefono` int(11) NOT NULL,
-  `direccion` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
+  `direccion` varchar(100) NOT NULL,
   `usuario_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -277,7 +306,7 @@ INSERT INTO `proveedor` (`codproveedor`, `proveedor`, `contacto`, `telefono`, `d
 
 CREATE TABLE `rol` (
   `idrol` int(11) NOT NULL,
-  `rol` varchar(50) COLLATE utf8_spanish_ci NOT NULL
+  `rol` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
@@ -296,10 +325,10 @@ INSERT INTO `rol` (`idrol`, `rol`) VALUES
 
 CREATE TABLE `usuario` (
   `idusuario` int(11) NOT NULL,
-  `nombre` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `correo` varchar(100) COLLATE utf8_spanish_ci NOT NULL,
-  `usuario` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
-  `clave` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `correo` varchar(100) NOT NULL,
+  `usuario` varchar(20) NOT NULL,
+  `clave` varchar(50) NOT NULL,
   `rol` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
@@ -308,8 +337,7 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`idusuario`, `nombre`, `correo`, `usuario`, `clave`, `rol`) VALUES
-(1, 'Administrador', 'admin@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3', 1),
-(6, 'Don Jaider', 'ingeniero@gmail.com', 'maria', '263bce650e68ab4e23f28263760b9fa5', 3);
+(1, 'Administrador', 'admin@gmail.com', 'admin', '21232f297a57a5a743894a0e4a801fc3', 1);
 
 --
 -- Índices para tablas volcadas
@@ -383,7 +411,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `idcliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idcliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion`
@@ -395,13 +423,13 @@ ALTER TABLE `configuracion`
 -- AUTO_INCREMENT de la tabla `detallefactura`
 --
 ALTER TABLE `detallefactura`
-  MODIFY `correlativo` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `correlativo` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_temp`
 --
 ALTER TABLE `detalle_temp`
-  MODIFY `correlativo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `correlativo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `entradas`
@@ -413,7 +441,7 @@ ALTER TABLE `entradas`
 -- AUTO_INCREMENT de la tabla `factura`
 --
 ALTER TABLE `factura`
-  MODIFY `nofactura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `nofactura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
@@ -438,67 +466,18 @@ ALTER TABLE `rol`
 --
 ALTER TABLE `usuario`
   MODIFY `idusuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+DELIMITER $$
+--
+-- Eventos
+--
+CREATE DEFINER=`root`@`localhost` EVENT `deshabilitar_ventas_nocturnas` ON SCHEDULE EVERY 1 DAY STARTS '2024-11-07 21:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE configuracion SET ventas_habilitadas = FALSE WHERE id=1$$
+
+CREATE DEFINER=`root`@`localhost` EVENT `habilitar_ventas_diurnas` ON SCHEDULE EVERY 1 DAY STARTS '2024-11-07 07:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE configuracion SET ventas_habilitadas = TRUE WHERE id=1$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- Triggers para sis_venta
-
--- Trigger para actualizar existencia de producto después de una venta en detallefactura
-DELIMITER //
-CREATE TRIGGER actualizar_existencia_producto
-AFTER INSERT ON detallefactura
-FOR EACH ROW
-BEGIN
-    DECLARE nueva_existencia INT;
-    SET nueva_existencia = (SELECT existencia FROM producto WHERE codproducto = NEW.codproducto) - NEW.cantidad;
-    UPDATE producto SET existencia = nueva_existencia WHERE codproducto = NEW.codproducto;
-END;
-//
-DELIMITER ;
-
--- Trigger para evitar ventas si no hay suficiente existencia en detalle_temp
-DELIMITER //
-CREATE TRIGGER verificar_existencia
-BEFORE INSERT ON detalle_temp
-FOR EACH ROW
-BEGIN
-    DECLARE existencia_actual INT;
-    SET existencia_actual = (SELECT existencia FROM producto WHERE codproducto = NEW.codproducto);
-    IF existencia_actual < NEW.cantidad THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Cantidad en inventario insuficiente para realizar la venta';
-    END IF;
-END;
-//
-DELIMITER ;
-
--- Trigger para restablecer inventario si se elimina una venta de detallefactura
-DELIMITER //
-CREATE TRIGGER restablecer_existencia
-AFTER DELETE ON detallefactura
-FOR EACH ROW
-BEGIN
-    UPDATE producto SET existencia = existencia + OLD.cantidad WHERE codproducto = OLD.codproducto;
-END;
-//
-DELIMITER ;
-
-
--- Consultas con JOIN para sis_venta
-
--- INNER JOIN entre cliente y factura para ver todas las facturas por cliente
-SELECT cliente.nombre AS cliente, factura.nofactura, factura.fecha, factura.totalfactura
-FROM cliente
-INNER JOIN factura ON cliente.idcliente = factura.codcliente;
-
--- LEFT JOIN entre detallefactura y producto para obtener detalles de venta incluyendo productos no vendidos
-SELECT producto.descripcion, detallefactura.cantidad, detallefactura.precio_venta
-FROM producto
-LEFT JOIN detallefactura ON producto.codproducto = detallefactura.codproducto;
-
--- RIGHT JOIN entre usuario y factura para ver todas las ventas asociadas con usuarios y los usuarios sin ventas
-SELECT usuario.nombre, factura.nofactura, factura.totalfactura
-FROM usuario
-RIGHT JOIN factura ON usuario.idusuario = factura.usuario;

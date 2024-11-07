@@ -1,5 +1,30 @@
 <?php include_once "includes/header.php"; ?>
+<?php
+						require "../conexion.php";
+						// Consulta para obtener el valor de ventas_habilitadas
+$sql = "SELECT ventas_habilitadas FROM configuracion WHERE id = 1"; // Reemplaza "1" por el ID específico
+$resultado = $conexion->query($sql);
 
+if ($resultado->num_rows > 0) {
+    $fila = $resultado->fetch_assoc();
+    $ventasHabilitadas = $fila['ventas_habilitadas'];
+
+    // Verifica el valor de ventas_habilitadas
+    if (!$ventasHabilitadas) {
+        // Si es FALSE, muestra el mensaje
+        echo "<script>alert('La venta no puede hacerse en estas horas.');</script>";$conexion->close();
+    } else {
+        // Continúa con el proceso de venta
+        
+    }
+} else {
+    echo "No se encontró la configuración.";
+}
+
+
+// Desactivar la visualización de errores
+ini_set('display_errors', 0);
+error_reporting(E_ALL);  // Log de todos los errores?>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <div class="row">
