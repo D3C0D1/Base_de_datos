@@ -108,7 +108,7 @@ DELETE FROM proveedor WHERE codproveedor = 5;
 
 ### 🚀 Instalación
 
-A continuación, se detallan los pasos para la instalación de DataConnect utilizando XAMPP o MySQL Workbench:
+A continuación, se detallan los pasos para la instalación de DataConnect utilizando XAMPP o MySQL Workbench: usuario y contraseña:admin
 
 ### 💻 Usando XAMPP
 
